@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Coding Dojo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        h1 {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manipulação do DOM</h1>
+    <p id="demo">Bem-vindo ao Coding Dojo!</p>
+    <button id="change-text">Alterar Texto</button>
+    <hr>
+    <form>
+        <input id="input" type="text" required>
+        <input id="input-data" type="date" required>
+        <button id="adicionar">Adicionar</button>
+        <button id="remover">Remover</button>
+         <ul id="lista"></ul>
+    </form>
+    <script>  
+        const lista = document.querySelector("#lista");
+        const input = document.querySelector("#input");
+        const inputData = document.querySelector("#input-data");
+        const adicionar = document.querySelector("#adicionar");
+        const remover = document.querySelector("#remover");
+        const titulo = document.querySelector("h1");
+        const texto = document.querySelector("#demo");
+        const btn = document.querySelector("#change-text");
+        btn.addEventListener("click", () => {
+            texto.innerHTML = "Texto Alterado com Sucesso!"
+        })
+        
+        titulo.addEventListener("mouseover", () => {
+            titulo.style.color = "#ff0000";
+        })
+        titulo.addEventListener("mouseout", () => {
+            titulo.style.color = "#007bff";
+        })
+        adicionar.addEventListener('click', () => {
+            lista.innerHTML = `<li>${input.value} (${inputData.value})</li>` + lista.innerHTML;
+            input.value = "";
+        })
+        remover.addEventListener("click", () => {
+            const li = Array.from(lista.querySelectorAll("li"));
+            li.pop();
+            lista.innerHTML = "";
+            li.forEach((item)=> {
+                console.log(item)
+                lista.innerHTML += `<li>${item.innerHTML}</li>`;
+            })
+        })
+    </script>
+</body>
+</html>
