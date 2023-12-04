@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,17 +12,23 @@
             text-align: center;
             margin: 50px;
         }
+
         h1 {
             color: #007bff;
         }
+
+        ul {
+            text-align: left;
+        }
     </style>
 </head>
+
 <body>
     <!-- Parte 1 -->
     <h1 id="titulo">Manipulação do DOM</h1>
     <p id="demo">Bem-vindo ao Coding Dojo!</p>
     <button id="change-text">Alterar Texto</button>
-    
+
     <hr>
 
     <!-- Parte 2 -->
@@ -55,24 +62,44 @@
         const formulario = document.querySelector("#formulario");
         const input = document.querySelector("#input");
         const inputData = document.querySelector("#input-data");
-        // const adicionar = document.querySelector("#adicionar");
         const remover = document.querySelector("#remover");
         const lista = document.querySelector("#lista");
+        // const adicionar = document.querySelector("#adicionar");
 
         formulario.addEventListener('submit', (event) => {
             event.preventDefault()
-            lista.innerHTML = `<li>${input.value} (${inputData.value})</li>` + lista.innerHTML;
+            lista.innerHTML = `<li>
+                <span>${input.value} (${inputData.value})</span>
+                <input class="check" type="checkbox" checked/> 
+                </li>` + lista.innerHTML;
             input.value = "";
+
+            verificar_check();
         });
 
         remover.addEventListener("click", () => {
             const li = Array.from(lista.querySelectorAll("li"));
             li.pop();
             lista.innerHTML = "";
-            li.forEach((item)=> {
+            li.forEach((item) => {
                 lista.innerHTML += `<li>${item.innerHTML}</li>`;
             });
         });
+
+        function verificar_check() {
+            const checks = document.querySelectorAll(".check");
+            checks.forEach(checkbox => {
+                checkbox.addEventListener('click', () => {
+                    const texto = checkbox.previousSibling.previousSibling;
+                    if (texto.style.textDecoration === "line-through") {
+                        texto.style.textDecoration = "none"
+                    } else {
+                        texto.style.textDecoration = "line-through";
+                    }
+                });
+            });
+        }
     </script>
 </body>
+
 </html>
