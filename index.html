@@ -17,29 +17,45 @@
             color: #007bff;
         }
 
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+
+        form {
+            width: max-content;
+        }
+
         ul {
             text-align: left;
+        }
+
+        .concluido span {
+            text-decoration: line-through;
         }
     </style>
 </head>
 
 <body>
     <!-- Parte 1 -->
-    <h1 id="titulo">Manipulação do DOM</h1>
-    <p id="demo">Bem-vindo ao Coding Dojo!</p>
-    <button id="change-text">Alterar Texto</button>
+    <div class="center">
+        <h1 id="titulo">Manipulação do DOM</h1>
+        <p id="demo">Bem-vindo ao Coding Dojo!</p>
+        <button id="change-text">Alterar Texto</button>
+    </div>
 
     <hr>
 
     <!-- Parte 2 -->
-    <form id="formulario">
-        <input id="input" type="text" required>
-        <input id="input-data" type="date" required>
-        <button id="adicionar" type="submit">Adicionar</button>
-        <button id="remover">Remover</button>
-        <ul id="lista"></ul>
-    </form>
-
+    <div class="container">
+        <form id="formulario">
+            <input id="input" type="text" required>
+            <input id="input-data" type="date" required>
+            <button type="submit">Adicionar</button>
+            <button id="remover">Remover</button>
+            <ul id="lista"></ul>
+        </form>
+    </div>
 
     <script>
         // Parte 1
@@ -57,46 +73,68 @@
             titulo.style.color = "#007bff";
         });
 
-
         // Parte 2
         const formulario = document.querySelector("#formulario");
         const input = document.querySelector("#input");
         const inputData = document.querySelector("#input-data");
         const remover = document.querySelector("#remover");
-        const lista = document.querySelector("#lista");
-        // const adicionar = document.querySelector("#adicionar");
+        const listaTarefa = document.querySelector("#lista");
 
         formulario.addEventListener('submit', (event) => {
-            event.preventDefault()
-            lista.innerHTML = `<li>
-                <span>${input.value} (${inputData.value})</span>
-                <input class="check" type="checkbox" checked/> 
-                </li>` + lista.innerHTML;
+            event.preventDefault();
+            const lista = listaTarefa.querySelectorAll("li");
+            const li = `<li><span>${input.value} (${inputData.value})</span> <input type="checkbox"/></li>`;
+            readicionarItens(lista, li);
             input.value = "";
-
-            verificar_check();
         });
 
-        remover.addEventListener("click", () => {
-            const li = Array.from(lista.querySelectorAll("li"));
-            li.pop();
-            lista.innerHTML = "";
-            li.forEach((item) => {
-                lista.innerHTML += `<li>${item.innerHTML}</li>`;
-            });
+        remover.addEventListener("click", (event) => {
+            event.preventDefault();
+            const lista = Array.from(listaTarefa.querySelectorAll("li.concluido"));
+            lista.forEach(li => {
+                listaTarefa.removeChild(li);
+            })
         });
 
-        function verificar_check() {
-            const checks = document.querySelectorAll(".check");
+        function adicionarCheckEvent() {
+            const checks = listaTarefa.querySelectorAll("input[type=checkbox]");
             checks.forEach(checkbox => {
                 checkbox.addEventListener('click', () => {
-                    const texto = checkbox.previousSibling.previousSibling;
-                    if (texto.style.textDecoration === "line-through") {
-                        texto.style.textDecoration = "none"
-                    } else {
-                        texto.style.textDecoration = "line-through";
-                    }
+                    const li = checkbox.parentElement;
+                    li.classList.toggle("concluido");
+
+                    const itens = Array.from(listaTarefa.querySelectorAll("li"));
+                    itens.splice(itens.indexOf(li), 1);
+
+                    if (li.classList.contains("concluido"))
+                        readicionarItens(itens, "", `<li class="concluido">${li.innerHTML}</li>`);
+                    else
+                        readicionarItens(itens, `<li>${li.innerHTML}</li>`);
                 });
+            });
+        }
+
+        function readicionarItens(lista, initialValue = "", lastValue = "") {
+            listaTarefa.innerHTML = initialValue;
+            lista.forEach((item) => {
+                if (item.classList.contains("concluido"))
+                    listaTarefa.innerHTML += `<li class="concluido">${item.innerHTML}</li>`;
+                else
+                    listaTarefa.innerHTML += `<li>${item.innerHTML}</li>`;
+            });
+            listaTarefa.innerHTML += lastValue;
+            adicionarCheckEvent();
+            checarTarefas();
+        }
+
+        function checarTarefas() {
+            const checks = listaTarefa.querySelectorAll("input[type=checkbox]");
+            checks.forEach(checkbox => {
+                const li = checkbox.parentElement;
+                if (li.classList.contains("concluido"))
+                    checkbox.checked = true;
+                else
+                    checkbox.checked = false;
             });
         }
     </script>
